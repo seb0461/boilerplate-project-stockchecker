@@ -3,12 +3,26 @@ require('dotenv').config();
 const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
+const helmet = require('helmet'); // Import Helmet
 
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
 
 const app = express();
+
+//For section 3
+app.use(helmet.hidePoweredBy()); // Removes X Powered-By: Express header.
+app.use(helmet.frameguard({ action: 'deny' })); //Protects against clickjacking attacks.
+app.use(helmet.xssFilter()); //Prevent reflected XSS attacks.
+app.use(helmet.noSniff());//Stops browser from executing malicious files as scripts or stylesheets
+app.use(helmet.ieNoOpen());//Protects against malicious download
+const ninetyDaysInSeconds = 90*24*60*60;
+const timeInSeconds = ninetyDaysInSeconds;
+app.use(helmet.hsts({maxAge: timeInSeconds, force: true})); //Protects against SSL stripping attacks and ensures secure connections
+app.use(helmet.dnsPrefetchControl()); //Controls DNS prefecthing
+app.use(helmet.noCache()); //Prevents clients from caching sensitive data
+app.use(helmet.contentSecurityPolicy({directives:{defaultSrc:["'self'"], scriptSrc:["'self'", 'trusted-cdn.com']}})); //Prevents XSS and data injection attacks
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
