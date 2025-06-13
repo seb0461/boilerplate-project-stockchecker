@@ -22,7 +22,7 @@ const timeInSeconds = ninetyDaysInSeconds;
 app.use(helmet.hsts({maxAge: timeInSeconds, force: true})); //Protects against SSL stripping attacks and ensures secure connections
 app.use(helmet.dnsPrefetchControl()); //Controls DNS prefecthing
 app.use(helmet.noCache()); //Prevents clients from caching sensitive data
-app.use(helmet.contentSecurityPolicy({directives:{defaultSrc:["'self'"], scriptSrc:["'self'", 'trusted-cdn.com']}})); //Prevents XSS and data injection attacks
+app.use(helmet.contentSecurityPolicy({directives:{defaultSrc:["'self'"], scriptSrc:["'self'", 'trusted-cdn.com'], styleSrc: ["'self'", 'https://cdnjs.cloudflare.com']}})); //Prevents XSS and data injection attacks
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
